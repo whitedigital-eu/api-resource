@@ -34,7 +34,7 @@ class ApiResourceBundle extends AbstractBundle
     {
         $definition
             ->rootNode()
-            ->canBeEnabled()
+            ->canBeDisabled()
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('php_version')
