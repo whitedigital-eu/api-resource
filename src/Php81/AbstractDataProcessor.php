@@ -4,6 +4,7 @@ namespace WhiteDigital\ApiResource\Php81;
 
 use ApiPlatform\State\ProcessorInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use WhiteDigital\ApiResource\Traits;
 use WhiteDigital\EntityResourceMapper\Mapper\EntityToResourceMapper;
 use WhiteDigital\EntityResourceMapper\Mapper\ResourceToEntityMapper;
@@ -18,6 +19,7 @@ abstract class AbstractDataProcessor implements ProcessorInterface
         protected readonly ResourceToEntityMapper $resourceToEntityMapper,
         protected readonly EntityToResourceMapper $entityToResourceMapper,
         protected readonly AuthorizationService $authorizationService,
+        protected readonly ParameterBagInterface $bag,
     ) {
     }
 }

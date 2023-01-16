@@ -6,6 +6,7 @@ use ApiPlatform\State\ProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use WhiteDigital\ApiResource\Traits;
@@ -28,6 +29,7 @@ abstract readonly class AbstractDataProvider implements ProviderInterface
         protected RequestStack $requestStack,
         protected TranslatorInterface $translator,
         protected Security $security,
+        protected ParameterBagInterface $bag,
         protected iterable $collectionExtensions = [],
     ) {
     }

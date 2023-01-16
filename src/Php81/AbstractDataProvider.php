@@ -5,8 +5,9 @@ namespace WhiteDigital\ApiResource\Php81;
 use ApiPlatform\State\ProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use WhiteDigital\ApiResource\Traits;
 use WhiteDigital\EntityResourceMapper\Mapper\ClassMapper;
@@ -28,6 +29,7 @@ abstract class AbstractDataProvider implements ProviderInterface
         protected readonly RequestStack $requestStack,
         protected readonly TranslatorInterface $translator,
         protected readonly Security $security,
+        protected readonly ParameterBagInterface $bag,
         protected readonly iterable $collectionExtensions = [],
     ) {
     }

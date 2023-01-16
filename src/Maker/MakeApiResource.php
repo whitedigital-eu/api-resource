@@ -89,7 +89,7 @@ If the argument is missing, the command will ask for the entity class name inter
 
         $provider = $generator->createClassNameDetails($entityName, ($dpn = $this->bag->get($wd . '.namespace.data_provider')) . $ns, $dpn);
 
-        $resource = $generator->createClassNameDetails($entityName, ($arn = $this->bag->get($wd . '.namespace.api_resource')) . $ns, $arn);
+        $resource = $generator->createClassNameDetails($entityName, $this->bag->get($wd . '.namespace.api_resource') . $ns, $this->bag->get($wd . '.defaults.api_resource_suffix'));
 
         $processor = $generator->createClassNameDetails($entityName, ($pn = $this->bag->get($wd . '.namespace.data_processor')) . $ns, $pn);
 

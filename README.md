@@ -3,7 +3,7 @@
 ### What is it?
 
 ApiResource maker is custom symfony maker to make creation of Api Platform resources, providers and processors easier
-if used in conjunction with whitedigital-eu/entity-resource-mapper-bundle.
+if used together with whitedigital-eu/entity-resource-mapper-bundle.
 
 ### System Requirements
 PHP 8.1+  
@@ -33,6 +33,7 @@ api_resource:
     defaults:
         role_separator: ':'
         space: '_'
+        api_resource_suffix: Resource
 ```
 ```php
 use Symfony\Config\ApiResourceConfig;
@@ -57,7 +58,8 @@ return static function (ApiResourceConfig $config): void {
         
     $defaults
         ->roleSeparator(':')
-        ->space('_');
+        ->space('_')
+        ->apiResourceSuffix('Resource');
 };
 ```
 `phpVersion` takes int|string as input, so you can do 80200 or 8.2.0 and it will work. Php version variable configuration is required as this bundle contains some 
@@ -65,8 +67,9 @@ php features introduced in php 8.2. So, if you need to use this bundle with php 
 
 `namespaces` are there to set up different directories for generated files. So, if you need to put files in different directories/namespaces, you can chnage it as such.  
 
-`defaults` are added to configure separators for groups used in api resource. For example, `UserRole` with defaults will become `user_role:read` for read group.  
+`roleSeparator` and `space` from `defaults` are added to configure separators for groups used in api resource. For example, `UserRole` with defaults will become `user_role:read` for read group.  
+`apiResourcrSuffix` defines suffix for api resource class name. For example, by default `User` entity will make `UserResource` api resource class.  
 
 ---
 ### Usage
-Simply run `make:api-resource <EntityName>` where EntityName is entity you want to create api resource for. Example, `make:api-resource User` to make UserApiResource for User entity.
+Simply run `make:api-resource <EntityName>` where EntityName is entity you want to create api resource for. Example, `make:api-resource User` to make UserResource for User entity.

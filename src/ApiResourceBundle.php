@@ -16,15 +16,16 @@ class ApiResourceBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         if (true === ($config['enabled'] ?? false)) {
+            $builder->setParameter('whitedigital.api_resource.defaults.api_resource_suffix', $config['defaults']['api_resource_suffix']);
+            $builder->setParameter('whitedigital.api_resource.defaults.role_separator', $config['defaults']['role_separator']);
+            $builder->setParameter('whitedigital.api_resource.defaults.space', $config['defaults']['space']);
             $builder->setParameter('whitedigital.api_resource.namespace.api_resource', $config['namespaces']['api_resource']);
             $builder->setParameter('whitedigital.api_resource.namespace.class_map_configurator', $config['namespaces']['class_map_configurator']);
-            $builder->setParameter('whitedigital.api_resource.namespace.data_provider', $config['namespaces']['data_provider']);
             $builder->setParameter('whitedigital.api_resource.namespace.data_processor', $config['namespaces']['data_processor']);
+            $builder->setParameter('whitedigital.api_resource.namespace.data_provider', $config['namespaces']['data_provider']);
             $builder->setParameter('whitedigital.api_resource.namespace.entity', $config['namespaces']['entity']);
             $builder->setParameter('whitedigital.api_resource.namespace.root', $config['namespaces']['root']);
             $builder->setParameter('whitedigital.api_resource.php_version', $config['php_version']);
-            $builder->setParameter('whitedigital.api_resource.defaults.space', $config['defaults']['space']);
-            $builder->setParameter('whitedigital.api_resource.defaults.role_separator', $config['defaults']['role_separator']);
 
             $container->import('../config/services.php');
         }
@@ -62,6 +63,7 @@ class ApiResourceBundle extends AbstractBundle
                 ->arrayNode('defaults')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->scalarNode('api_resource_suffix')->defaultValue('Resource')->end()
                         ->scalarNode('role_separator')->defaultValue(':')->end()
                         ->scalarNode('space')->defaultValue('_')->end()
                     ->end()
