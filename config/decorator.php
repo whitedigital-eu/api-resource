@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use WhiteDigital\ApiResource\OpenApi\OpenApiFactory;
 
 return static function (ContainerConfigurator $container): void {
     $services = $container->services();
@@ -9,6 +10,5 @@ return static function (ContainerConfigurator $container): void {
         ->autowire()
         ->autoconfigure();
 
-    $services->load(namespace: 'WhiteDigital\\ApiResource\\', resource: __DIR__ . '/../src/*')
-        ->exclude(excludes: [__DIR__ . '/../src/{Entity}']);
+    $services->set(OpenApiFactory::class);
 };

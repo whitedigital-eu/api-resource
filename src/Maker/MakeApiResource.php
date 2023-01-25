@@ -123,9 +123,14 @@ If the argument is missing, the command will ask for the entity class name inter
             ],
         );
 
+        $apiResourceTemplate = match ($phpVersion) {
+            'Php81' => '/skeleton/apiresource/ApiResource81.tpl.php',
+            default => '/skeleton/apiresource/ApiResource.tpl.php',
+        };
+
         $generator->generateClass(
             $resource->getFullName(),
-            dirname(__DIR__, 2) . '/skeleton/apiresource/ApiResource.tpl.php',
+            dirname(__DIR__, 2) . $apiResourceTemplate,
             [
                 'entity_name' => $entityName,
                 'prefix' => $this->toSnakeCase($entityName, $this->bag->get($wd . '.defaults.space')),

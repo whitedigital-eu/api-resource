@@ -35,7 +35,7 @@ trait AbstractDataProvider
         return $this->getItem($operation, $uriVariables['id'], $context);
     }
 
-    protected function getCollection(?Operation $operation = null, array $context = []): array|object
+    protected function getCollection(Operation $operation, array $context = []): array|object
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('e')->from($resourceClass = $this->getEntityClass($operation), 'e');
@@ -50,12 +50,12 @@ trait AbstractDataProvider
         return $this->classMapper->byResource($operation->getClass());
     }
 
-    protected function applyFilterExtensionsToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, ?Operation $operation = null, array $context = []): array|object
+    protected function applyFilterExtensionsToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, Operation $operation, array $context = []): array|object
     {
         foreach ($this->collectionExtensions as $extension) {
             if ($extension instanceof FilterExtension
                 || $extension instanceof QueryResultCollectionExtensionInterface) {
-                $extension->applyToCollection($queryBuilder, $queryNameGenerator, $operation?->getClass(), $operation, $context);
+                $extension->applyToCollection($queryBuilder, $queryNameGenerator, $operation->getClass(), $operation, $context);
             }
 
             if ($extension instanceof OrderExtension) {
@@ -64,13 +64,13 @@ trait AbstractDataProvider
                     continue;
                 }
 
-                foreach ($operation?->getOrder() as $field => $direction) {
+                foreach ($operation->getOrder() as $field => $direction) {
                     $queryBuilder->addOrderBy(sprintf('%s.%s', $queryBuilder->getRootAliases()[0], $field), $direction);
                 }
             }
 
-            if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($operation?->getClass(), $operation, $context)) {
-                return $extension->getResult($queryBuilder, $operation?->getClass(), $operation, $context);
+            if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($operation->getClass(), $operation, $context)) {
+                return $extension->getResult($queryBuilder, $operation->getClass(), $operation, $context);
             }
         }
 
@@ -93,7 +93,7 @@ trait AbstractDataProvider
     protected function throwErrorIfNotExists(mixed $result, string $rootAlias, mixed $id): void
     {
         if (null === $result) {
-            throw new NotFoundHttpException(sprintf('Resurss %s:%s nav atrasts.', $rootAlias, $id));
+            throw new NotFoundHttpException($this->translator->trans('named_resource_not_found', ['resource' => $rootAlias, 'id' => $id], domain: 'ApiResource'));
         }
     }
 

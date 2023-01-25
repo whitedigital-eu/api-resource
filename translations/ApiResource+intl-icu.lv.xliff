@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>named_resource_not_found</source>
+                <target>Resurss {resource}:{id} nav atrasts</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>resource_not_found</source>
+                <target>Resurss nav atrasts</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>unable_to_delete_record</source>
+                <target>Šo ierakstu nav iespējams dzēst, jo tas tiek izmantots citur ({detail})</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>named_required_parameter_is_missing</source>
+                <target>Trūkst obligātais parametrs "{parameter}"</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>named_required_parameter_is_incorrect</source>
+                <target>Nekorekta "{parameter}" vērtība</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

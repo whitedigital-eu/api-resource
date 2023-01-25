@@ -4,7 +4,7 @@ namespace WhiteDigital\ApiResource\Traits;
 
 use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
@@ -12,17 +12,16 @@ use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
 
 use function preg_match;
-use function sprintf;
 
 trait AbstractDataProcessor
 {
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?object
     {
         if (!$operation instanceof DeleteOperationInterface) {
-            if ($operation instanceof Post) {
-                $entity = $this->post($data, $context);
-            } else {
+            if ($operation instanceof Patch) {
                 $entity = $this->patch($data, $context);
+            } else {
+                $entity = $this->post($data, $context);
             }
 
             $this->flushAndRefresh($entity);
@@ -85,7 +84,7 @@ trait AbstractDataProcessor
             $this->entityManager->flush();
         } catch (Exception $exception) {
             preg_match('/DETAIL: (.*)/', $exception->getMessage(), $matches);
-            throw new AccessDeniedHttpException(sprintf('Šo ierakstu nav iespējams dzēst, jo tas tiek izmantots citur (%s).', $matches[1]), $exception);
+            throw new AccessDeniedHttpException($this->translator->trans('unable_to_delete_record', ['detail' => $matches[1]], domain: 'ApiResource'), $exception);
         }
     }
 }

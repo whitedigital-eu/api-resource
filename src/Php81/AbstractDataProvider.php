@@ -6,6 +6,7 @@ use ApiPlatform\State\ProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -19,6 +20,7 @@ abstract class AbstractDataProvider implements ProviderInterface
 {
     use Traits\AbstractDataProvider;
 
+    /** @noinspection PhpInapplicableAttributeTargetDeclarationInspection */
     public function __construct(
         protected readonly EntityManagerInterface $entityManager,
         protected readonly ManagerRegistry $doctrine,
@@ -30,6 +32,7 @@ abstract class AbstractDataProvider implements ProviderInterface
         protected readonly TranslatorInterface $translator,
         protected readonly Security $security,
         protected readonly ParameterBagInterface $bag,
+        #[TaggedIterator('api_platform.doctrine.orm.query_extension.collection')]
         protected readonly iterable $collectionExtensions = [],
     ) {
     }

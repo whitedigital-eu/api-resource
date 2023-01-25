@@ -6,29 +6,44 @@ use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use Vich\UploaderBundle\Naming\SmartUniqueNamer;
+use WhiteDigital\ApiResource\DependencyInjections\Traits\DefineApiPlatformMappings;
+use WhiteDigital\ApiResource\DependencyInjections\Traits\DefineOrmMappings;
 
+use function array_merge_recursive;
 use function explode;
 
 use const PHP_VERSION_ID;
 
 class ApiResourceBundle extends AbstractBundle
 {
+    use DefineApiPlatformMappings;
+    use DefineOrmMappings;
+
+    private const MAPPINGS = [
+        'type' => 'attribute',
+        'dir' => __DIR__ . '/Entity',
+        'alias' => 'ApiResource',
+        'prefix' => 'WhiteDigital\ApiResource\Entity',
+        'is_bundle' => false,
+        'mapping' => true,
+    ];
+
+    private const PATHS = [
+        '%kernel.project_dir%/vendor/whitedigital-eu/api-resource/src/ApiResource',
+    ];
+
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         if (true === ($config['enabled'] ?? false)) {
-            $builder->setParameter('whitedigital.api_resource.defaults.api_resource_suffix', $config['defaults']['api_resource_suffix']);
-            $builder->setParameter('whitedigital.api_resource.defaults.role_separator', $config['defaults']['role_separator']);
-            $builder->setParameter('whitedigital.api_resource.defaults.space', $config['defaults']['space']);
-            $builder->setParameter('whitedigital.api_resource.namespace.api_resource', $config['namespaces']['api_resource']);
-            $builder->setParameter('whitedigital.api_resource.namespace.class_map_configurator', $config['namespaces']['class_map_configurator']);
-            $builder->setParameter('whitedigital.api_resource.namespace.data_processor', $config['namespaces']['data_processor']);
-            $builder->setParameter('whitedigital.api_resource.namespace.data_provider', $config['namespaces']['data_provider']);
-            $builder->setParameter('whitedigital.api_resource.namespace.entity', $config['namespaces']['entity']);
-            $builder->setParameter('whitedigital.api_resource.namespace.root', $config['namespaces']['root']);
-            $builder->setParameter('whitedigital.api_resource.php_version', $config['php_version']);
+            foreach ((new Functions())->makeOneDimension(['whitedigital.api_resource' => $config], onlyLast: true) as $key => $value) {
+                $builder->setParameter($key, $value);
+            }
 
             $container->import('../config/services.php');
         }
+
+        $container->import('../config/decorator.php');
     }
 
     public function configure(DefinitionConfigurator $definition): void
@@ -68,6 +83,38 @@ class ApiResourceBundle extends AbstractBundle
                         ->scalarNode('space')->defaultValue('_')->end()
                     ->end()
                 ->end()
+                ->booleanNode('enable_storage')->defaultFalse()->end()
+                ->scalarNode('entity_manager')->defaultValue('default')->end()
             ->end();
+    }
+
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        $apiResource = array_merge_recursive(...$builder->getExtensionConfig('api_resource') ?? []);
+        $audit = array_merge_recursive(...$builder->getExtensionConfig('whitedigital') ?? [])['audit'] ?? [];
+
+        if (true === ($apiResource['enabled'] ?? true)) {
+            if (true === ($apiResource['enable_storage'] ?? false)) {
+                $mappings = $this->getOrmMappings($builder, $apiResource['entity_manager'] ?? 'default');
+
+                $this->addDoctrineConfig($container, $apiResource['entity_manager'] ?? 'default', $mappings, 'ApiResource', self::MAPPINGS);
+                $this->addApiPlatformPaths($container, self::PATHS);
+
+                if (true === ($audit['enabled'] ?? false)) {
+                    $this->addDoctrineConfig($container, $audit['audit_entity_manager'], $mappings, 'ApiResource', self::MAPPINGS);
+                }
+
+                $container->extension('vich_uploader', [
+                    'mappings' => [
+                        'wd_ar_media_object' => [
+                            'uri_prefix' => '/storage',
+                            'upload_destination' => '%kernel.project_dir%/public/wd/storage',
+                            'inject_on_load' => false,
+                            'namer' => SmartUniqueNamer::class,
+                        ],
+                    ],
+                ]);
+            }
+        }
     }
 }
