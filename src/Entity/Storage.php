@@ -20,7 +20,26 @@ class Storage extends BaseEntity
     #[ORM\Column(nullable: false)]
     private ?string $filePath = null;
 
-    #[Vich\UploadableField(mapping: 'wd_ar_media_object', fileNameProperty: 'filePath')]
+    #[ORM\Column(nullable: true)]
+    private ?int $size = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $mimeType = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $originalName = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $dimensions = null;
+
+    #[Vich\UploadableField(
+        mapping: 'wd_ar_media_object',
+        fileNameProperty: 'filePath',
+        size: 'size',
+        mimeType: 'mimeType',
+        originalName: 'originalName',
+        dimensions: 'dimensions',
+    )]
     private ?File $file = null;
 
     public function getFilePath(): ?string
@@ -43,6 +62,54 @@ class Storage extends BaseEntity
     public function setFile(?File $file): self
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
+    }
+
+    public function setSize(?int $size): self
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->mimeType;
+    }
+
+    public function setMimeType(?string $mimeType): self
+    {
+        $this->mimeType = $mimeType;
+
+        return $this;
+    }
+
+    public function getOriginalName(): ?string
+    {
+        return $this->originalName;
+    }
+
+    public function setOriginalName(?string $originalName): self
+    {
+        $this->originalName = $originalName;
+
+        return $this;
+    }
+
+    public function getDimensions(): ?array
+    {
+        return $this->dimensions;
+    }
+
+    public function setDimensions(?array $dimensions): self
+    {
+        $this->dimensions = $dimensions;
 
         return $this;
     }

@@ -41,6 +41,10 @@ class CreateStorageObjectController extends AbstractController
         $mediaObject->id = $storage->getId();
         $mediaObject->filePath = $storage->getFilePath();
         $mediaObject->file = $storage->getFile();
+        $mediaObject->size = $storage->getSize();
+        $mediaObject->mimeType = $storage->getMimeType();
+        $mediaObject->dimensions = $storage->getDimensions();
+        $mediaObject->originalName = $storage->getOriginalName();
         $mediaObject->contentUrl = $vichStorage->resolveUri($storage, 'file');
         $mediaObject->createdAt = $storage->getCreatedAt();
 

@@ -79,7 +79,7 @@ If the argument is missing, the command will ask for the entity class name inter
         $ns = '\\';
         $wd = 'whitedigital.api_resource';
 
-        $entity = $generator->createClassNameDetails($entityName, $this->bag->get($wd . '.namespace.entity') . $ns);
+        $entity = $generator->createClassNameDetails($entityName, $this->bag->get($wd . '.namespaces.entity') . $ns);
 
         if (!is_subclass_of($entity->getFullName(), BaseEntity::class)) {
             $io->caution(sprintf('%s does not exist or it does not extend BaseEntity', $entity->getShortName()));
@@ -87,11 +87,11 @@ If the argument is missing, the command will ask for the entity class name inter
             exit;
         }
 
-        $provider = $generator->createClassNameDetails($entityName, ($dpn = $this->bag->get($wd . '.namespace.data_provider')) . $ns, $dpn);
+        $provider = $generator->createClassNameDetails($entityName, ($dpn = $this->bag->get($wd . '.namespaces.data_provider')) . $ns, $dpn);
 
-        $resource = $generator->createClassNameDetails($entityName, $this->bag->get($wd . '.namespace.api_resource') . $ns, $this->bag->get($wd . '.defaults.api_resource_suffix'));
+        $resource = $generator->createClassNameDetails($entityName, $this->bag->get($wd . '.namespaces.api_resource') . $ns, $this->bag->get($wd . '.defaults.api_resource_suffix'));
 
-        $processor = $generator->createClassNameDetails($entityName, ($pn = $this->bag->get($wd . '.namespace.data_processor')) . $ns, $pn);
+        $processor = $generator->createClassNameDetails($entityName, ($pn = $this->bag->get($wd . '.namespaces.data_processor')) . $ns, $pn);
 
         if (class_exists($provider->getFullName(), false) || class_exists($resource->getFullName(), false) || class_exists($processor->getFullName(), false)) {
             $io->caution(sprintf('%s, %s or %s already exists', $resource->getShortName(), $processor->getShortName(), $provider->getShortName()));
@@ -172,7 +172,7 @@ If the argument is missing, the command will ask for the entity class name inter
             'condition' => null,
         ];
 
-        $configurator = $generator->createClassNameDetails('ClassMapperConfigurator', $this->bag->get($wd . '.namespace.class_map_configurator'));
+        $configurator = $generator->createClassNameDetails('ClassMapperConfigurator', $this->bag->get($wd . '.namespaces.class_map_configurator'));
         if (class_exists($configurator->getFullName())) {
             unlink($this->fixPath($configurator->getFullName()));
         }
@@ -197,7 +197,7 @@ If the argument is missing, the command will ask for the entity class name inter
 
     private function fixPath(string $className): string
     {
-        $className = preg_replace('#' . $this->bag->get('whitedigital.api_resource.namespace.root') . '\\\\#', '', $className, 1);
+        $className = preg_replace('#' . $this->bag->get('whitedigital.api_resource.namespaces.root') . '\\\\#', '', $className, 1);
         $className = str_replace('\\', '/', $className);
 
         return getcwd() . '/src/' . $className . '.php';

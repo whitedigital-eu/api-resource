@@ -81,9 +81,28 @@ class StorageResource extends BaseResource
 
     #[Assert\NotNull(groups: [self::WRITE, ])]
     #[Assert\File(groups: [self::WRITE, ])]
-    #[Vich\UploadableField(mapping: 'wd_ar_media_object', fileNameProperty: 'filePath')]
+    #[Vich\UploadableField(
+        mapping: 'wd_ar_media_object',
+        fileNameProperty: 'filePath',
+        size: 'size',
+        mimeType: 'mimeType',
+        originalName: 'originalName',
+        dimensions: 'dimensions',
+    )]
     public ?File $file = null;
 
     #[Groups([self::READ, ])]
     public ?string $filePath = null;
+
+    #[Groups([self::READ, ])]
+    public ?int $size = null;
+
+    #[Groups([self::READ, ])]
+    public ?string $mimeType = null;
+
+    #[Groups([self::READ, ])]
+    public ?string $originalName = null;
+
+    #[Groups([self::READ, ])]
+    public ?array $dimensions = null;
 }

@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Post;
 use <?php echo $processor->getFullName() . ";\n"; ?>
 use <?php echo $provider->getFullName() . ";\n"; ?>
 use Doctrine\Common\Collections\Criteria;
+use Symfony\Component\Serializer\Annotation\Groups;
 use WhiteDigital\ApiResource\ApiResource\Traits as ARTraits;
 use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 
