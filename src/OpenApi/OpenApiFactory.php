@@ -23,9 +23,10 @@ final readonly class OpenApiFactory implements OpenApiFactoryInterface
     {
         $validBundle = $this->bag->has($keyBundle = 'whitedigital.api_resource.enabled') && true === $this->bag->get($keyBundle);
         $validKey = $this->bag->has($keyKey = 'whitedigital.api_resource.enable_storage') && true === $this->bag->get($keyKey);
+        $validResource = $this->bag->has($resourceKey = 'whitedigital.api_resource.enable_storage_resource') && true === $this->bag->get($resourceKey);
         $openApi = $this->decorated->__invoke($context);
 
-        if (!$validBundle || !$validKey) {
+        if (!$validBundle || !$validKey || !$validResource) {
             $filteredPaths = new Model\Paths();
             foreach ($openApi->getPaths()->getPaths() as $path => $pathItem) {
                 if (str_starts_with($path, '/api/wd/ar/')) {

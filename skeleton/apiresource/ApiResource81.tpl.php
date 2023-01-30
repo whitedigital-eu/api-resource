@@ -24,21 +24,21 @@ use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
             ),
             new Get(
                 requirements: ['id' => '\d+', ],
-                normalizationContext: ['groups' => [<?php echo $class_name; ?>::ITEM, ], ],
+                normalizationContext: ['groups' => [self::ITEM, ], ],
             ),
             new GetCollection(
-                normalizationContext: ['groups' => [<?php echo $class_name; ?>::READ, ], ],
+                normalizationContext: ['groups' => [self::READ, ], ],
             ),
             new Patch(
                 requirements: ['id' => '\d+', ],
-                denormalizationContext: ['groups' => [<?php echo $class_name; ?>::PATCH, ], ],
+                denormalizationContext: ['groups' => [self::PATCH, ], ],
             ),
             new Post(
-                denormalizationContext: ['groups' => [<?php echo $class_name; ?>::WRITE, ], ],
+                denormalizationContext: ['groups' => [self::WRITE, ], ],
             ),
         ],
-        normalizationContext: ['groups' => [<?php echo $class_name; ?>::READ, ], ],
-        denormalizationContext: ['groups' => [<?php echo $class_name; ?>::WRITE, ], ],
+        normalizationContext: ['groups' => [self::READ, ], ],
+        denormalizationContext: ['groups' => [self::WRITE, ], ],
         order: ['createdAt' => Criteria::DESC, ],
         provider: <?php echo $provider->getShortName(); ?>::class,
         processor: <?php echo $processor->getShortName(); ?>::class,

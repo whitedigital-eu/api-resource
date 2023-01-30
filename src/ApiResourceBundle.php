@@ -84,6 +84,7 @@ class ApiResourceBundle extends AbstractBundle
                     ->end()
                 ->end()
                 ->booleanNode('enable_storage')->defaultFalse()->end()
+                ->booleanNode('enable_storage_resource')->defaultTrue()->end()
                 ->scalarNode('entity_manager')->defaultValue('default')->end()
             ->end();
     }
