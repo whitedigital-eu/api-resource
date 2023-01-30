@@ -21,12 +21,9 @@ final readonly class OpenApiFactory implements OpenApiFactoryInterface
 
     public function __invoke(array $context = []): OpenApi
     {
-        $validBundle = $this->bag->has($keyBundle = 'whitedigital.api_resource.enabled') && true === $this->bag->get($keyBundle);
-        $validKey = $this->bag->has($keyKey = 'whitedigital.api_resource.enable_storage') && true === $this->bag->get($keyKey);
-        $validResource = $this->bag->has($resourceKey = 'whitedigital.api_resource.enable_storage_resource') && true === $this->bag->get($resourceKey);
         $openApi = $this->decorated->__invoke($context);
 
-        if (!$validBundle || !$validKey || !$validResource) {
+        if (!$this->validate()) {
             $filteredPaths = new Model\Paths();
             foreach ($openApi->getPaths()->getPaths() as $path => $pathItem) {
                 if (str_starts_with($path, '/api/wd/ar/')) {
@@ -40,5 +37,16 @@ final readonly class OpenApiFactory implements OpenApiFactoryInterface
         }
 
         return $openApi;
+    }
+
+    private function validate(): bool
+    {
+        if ($this->bag->has($keyBundle = 'whitedigital.api_resource.enabled') && true === $this->bag->get($keyBundle)) {
+            if ($this->bag->has($keyStorage = 'whitedigital.api_resource.enable_storage') && true === $this->bag->get($keyStorage)) {
+                return $this->bag->has($keyResource = 'whitedigital.api_resource.enable_storage_resource') && true === $this->bag->get($keyResource);
+            }
+        }
+
+        return false;
     }
 }
