@@ -5,15 +5,15 @@ namespace WhiteDigital\ApiResource\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use WhiteDigital\ApiResource\ApiResource\StorageResource;
+use WhiteDigital\ApiResource\ApiResource\StorageItemResource;
 use WhiteDigital\EntityResourceMapper\Attribute\Mapping;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 use WhiteDigital\EntityResourceMapper\Entity\Traits\Id;
 
 #[ORM\Entity]
 #[Vich\Uploadable]
-#[Mapping(StorageResource::class)]
-class Storage extends BaseEntity
+#[Mapping(StorageItemResource::class)]
+class StorageItem extends BaseEntity
 {
     use Id;
 

@@ -10,13 +10,13 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\Storage\StorageInterface;
-use WhiteDigital\ApiResource\ApiResource\StorageResource;
-use WhiteDigital\ApiResource\Entity\Storage;
+use WhiteDigital\ApiResource\ApiResource\StorageItemResource;
+use WhiteDigital\ApiResource\Entity\StorageItem;
 
 #[AsController]
 class CreateStorageObjectController extends AbstractController
 {
-    public function __invoke(Request $request, EntityManagerInterface $em, StorageInterface $vichStorage, TranslatorInterface $translator): StorageResource
+    public function __invoke(Request $request, EntityManagerInterface $em, StorageInterface $vichStorage, TranslatorInterface $translator): StorageItemResource
     {
         if (!$request->files->has($key = 'file')) {
             throw new BadRequestHttpException($translator->trans('named_required_parameter_is_missing', ['parameter' => 'file'], domain: 'ApiResource'));
@@ -32,12 +32,12 @@ class CreateStorageObjectController extends AbstractController
             throw new BadRequestHttpException($translator->trans($uploadedFile->getErrorMessage()));
         }
 
-        $storage = (new Storage())->setFile($uploadedFile);
+        $storage = (new StorageItem())->setFile($uploadedFile);
 
         $em->persist($storage);
         $em->flush();
 
-        $mediaObject = new StorageResource();
+        $mediaObject = new StorageItemResource();
         $mediaObject->id = $storage->getId();
         $mediaObject->filePath = $storage->getFilePath();
         $mediaObject->file = $storage->getFile();

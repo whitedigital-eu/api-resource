@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Vich\UploaderBundle\Storage\StorageInterface;
-use WhiteDigital\ApiResource\ApiResource\StorageResource;
+use WhiteDigital\ApiResource\ApiResource\StorageItemResource;
 
 final class StorageNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
@@ -25,7 +25,7 @@ final class StorageNormalizer implements NormalizerInterface, NormalizerAwareInt
             return false;
         }
 
-        return $data instanceof StorageResource;
+        return $data instanceof StorageItemResource;
     }
 
     public function normalize(mixed $object, ?string $format = null, array $context = []): float|array|ArrayObject|bool|int|string|null

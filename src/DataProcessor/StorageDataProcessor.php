@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use WhiteDigital\ApiResource\Entity\Storage;
+use WhiteDigital\ApiResource\Entity\StorageItem;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
@@ -35,7 +35,7 @@ final readonly class StorageDataProcessor implements ProcessorInterface
     protected function remove(BaseResource $resource): void
     {
         $this->authorizationService->authorizeSingleObject($resource, AuthorizationService::ITEM_DELETE);
-        $entity = $this->entityManager->getRepository(Storage::class)->find($resource->id);
+        $entity = $this->entityManager->getRepository(StorageItem::class)->find($resource->id);
         if (null !== $entity) {
             $this->removeWithFkCheck($entity);
         }

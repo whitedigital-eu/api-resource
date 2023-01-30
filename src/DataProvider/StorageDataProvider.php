@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\Operation;
 use ReflectionException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use WhiteDigital\ApiResource\ApiResource\StorageResource;
+use WhiteDigital\ApiResource\ApiResource\StorageItemResource;
 use WhiteDigital\ApiResource\Php82\AbstractDataProvider;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 
@@ -31,8 +31,8 @@ final readonly class StorageDataProvider extends AbstractDataProvider
      * @throws ResourceClassNotFoundException
      * @throws ReflectionException
      */
-    protected function createResource(BaseEntity $entity, array $context): StorageResource
+    protected function createResource(BaseEntity $entity, array $context): StorageItemResource
     {
-        return StorageResource::create($entity, $context);
+        return StorageItemResource::create($entity, $context);
     }
 }
