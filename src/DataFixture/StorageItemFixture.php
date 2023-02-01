@@ -14,7 +14,7 @@ class StorageItemFixture extends Fixture
     public function load(ObjectManager $manager): void
     {
         $templateFileName = __DIR__ . '/assets/storage_item-fixture.template.txt';
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $fileName = __DIR__ . '/assets/storage_iten-' . $i . '.txt';
 
             copy($templateFileName, $fileName);
