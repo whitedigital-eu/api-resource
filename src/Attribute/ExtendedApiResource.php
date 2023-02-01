@@ -15,6 +15,11 @@ use function debug_backtrace;
 use function file_get_contents;
 use function func_get_args;
 
+use const T_CLASS;
+use const T_NAMESPACE;
+use const T_STRING;
+use const T_WHITESPACE;
+
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class ExtendedApiResource extends ApiResource
 {
@@ -54,22 +59,22 @@ class ExtendedApiResource extends ApiResource
         $tokens = PhpToken::tokenize(file_get_contents($file));
 
         for ($i = 0, $c = count($tokens); $i < $c; $i++) {
-            if ('T_NAMESPACE' === $tokens[$i]->getTokenName()) {
+            if (T_NAMESPACE === $tokens[$i]->id) {
                 for ($j = $i + 1; $j < $c; $j++) {
-                    if ('T_NAME_QUALIFIED' === $tokens[$j]->getTokenName()) {
+                    if (T_NAME_QUALIFIED === $tokens[$j]->id) {
                         $namespace = $tokens[$j]->text;
                         break;
                     }
                 }
             }
 
-            if ('T_CLASS' === $tokens[$i]->getTokenName()) {
+            if (T_CLASS === $tokens[$i]->id) {
                 for ($j = $i + 1; $j < $c; $j++) {
-                    if ('T_WHITESPACE' === $tokens[$j]->getTokenName()) {
+                    if (T_WHITESPACE === $tokens[$j]->id) {
                         continue;
                     }
 
-                    if ('T_STRING' === $tokens[$j]->getTokenName()) {
+                    if (T_STRING === $tokens[$j]->id) {
                         return $namespace . '\\' . $tokens[$j]->text;
                     }
                     break;
