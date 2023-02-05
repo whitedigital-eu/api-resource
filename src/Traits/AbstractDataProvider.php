@@ -38,9 +38,9 @@ trait AbstractDataProvider
     protected function getCollection(Operation $operation, array $context = []): array|object
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('e')->from($resourceClass = $this->getEntityClass($operation), 'e');
+        $queryBuilder->select('e')->from($this->getEntityClass($operation), 'e');
 
-        $this->authorizationService->limitGetCollection($resourceClass, $queryBuilder);
+        $this->authorizationService->limitGetCollection($operation->getClass(), $queryBuilder);
 
         return $this->applyFilterExtensionsToCollection($queryBuilder, new QueryNameGenerator(), $operation, $context);
     }
