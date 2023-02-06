@@ -13,9 +13,13 @@ use Doctrine\ORM\QueryBuilder;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
+use Throwable;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
 
+use function array_key_exists;
+use function array_merge;
 use function count;
 use function is_array;
 use function sprintf;
@@ -40,6 +44,7 @@ trait AbstractDataProvider
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('e')->from($this->getEntityClass($operation), 'e');
 
+        $this->authorizationService->setAuthorizationOverride(fn () => $this->override(AuthorizationService::COL_GET, $operation->getClass()));
         $this->authorizationService->limitGetCollection($operation->getClass(), $queryBuilder);
 
         return $this->applyFilterExtensionsToCollection($queryBuilder, new QueryNameGenerator(), $operation, $context);
@@ -85,6 +90,7 @@ trait AbstractDataProvider
         $entity = $this->entityManager->getRepository($entityClass = $this->getEntityClass($operation))->find($id);
 
         $this->throwErrorIfNotExists($entity, strtolower((new ReflectionClass($entityClass))->getShortName()), $id);
+        $this->authorizationService->setAuthorizationOverride(fn () => $this->override(AuthorizationService::ITEM_GET, $operation->getClass()));
         $this->authorizationService->authorizeSingleObject($entity, AuthorizationService::ITEM_GET);
 
         return $this->createResource($entity, $context);
@@ -106,5 +112,21 @@ trait AbstractDataProvider
         $this->throwErrorIfNotExists($entity, $queryBuilder->getRootAliases()[0], $queryBuilder->getParameter('id')?->getValue());
 
         return $entity;
+    }
+
+    protected function override(string $operation, string $class): bool
+    {
+        try {
+            $attributes = (new ReflectionClass($this->authorizationService))->getProperty('resources')->getValue($this->authorizationService)[$class];
+        } catch (Throwable) {
+            return false;
+        }
+
+        $allowed = array_merge($attributes[AuthorizationService::ALL] ?? [], $attributes[$operation] ?? []);
+        if ([] !== $allowed && array_key_exists(AuthenticatedVoter::PUBLIC_ACCESS, $allowed)) {
+            return true;
+        }
+
+        return false;
     }
 }

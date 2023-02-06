@@ -6,11 +6,16 @@ use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Patch;
 use Exception;
+use ReflectionClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
+use Throwable;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
 
+use function array_key_exists;
+use function array_merge;
 use function preg_match;
 
 trait AbstractDataProcessor
@@ -19,9 +24,9 @@ trait AbstractDataProcessor
     {
         if (!$operation instanceof DeleteOperationInterface) {
             if ($operation instanceof Patch) {
-                $entity = $this->patch($data, $context);
+                $entity = $this->patch($data, $operation, $context);
             } else {
-                $entity = $this->post($data, $context);
+                $entity = $this->post($data, $operation, $context);
             }
 
             $this->flushAndRefresh($entity);
@@ -29,21 +34,23 @@ trait AbstractDataProcessor
             return $this->createResource($entity, $context);
         }
 
-        $this->remove($data);
+        $this->remove($data, $operation);
 
         return null;
     }
 
-    protected function patch(mixed $data, array $context = []): ?BaseEntity
+    protected function patch(mixed $data, Operation $operation, array $context = []): ?BaseEntity
     {
+        $this->authorizationService->setAuthorizationOverride(fn () => $this->override(AuthorizationService::ITEM_PATCH, $operation->getClass()));
         $this->authorizationService->authorizeSingleObject($data, AuthorizationService::ITEM_PATCH);
         $existingEntity = $this->findById($this->getEntityClass(), $data->id);
 
         return $this->createEntity($data, $context, $existingEntity);
     }
 
-    protected function post(mixed $data, array $context = []): ?BaseEntity
+    protected function post(mixed $data, Operation $operation, array $context = []): ?BaseEntity
     {
+        $this->authorizationService->setAuthorizationOverride(fn () => $this->override(AuthorizationService::COL_POST, $operation->getClass()));
         $this->authorizationService->authorizeSingleObject($data, AuthorizationService::COL_POST);
 
         return $this->createEntity($data, $context);
@@ -67,8 +74,9 @@ trait AbstractDataProcessor
 
     abstract protected function createResource(BaseEntity $entity, array $context);
 
-    protected function remove(BaseResource $resource): void
+    protected function remove(BaseResource $resource, Operation $operation): void
     {
+        $this->authorizationService->setAuthorizationOverride(fn () => $this->override(AuthorizationService::ITEM_DELETE, $operation->getClass()));
         $this->authorizationService->authorizeSingleObject($resource, AuthorizationService::ITEM_DELETE);
         $entity = $this->findById($this->getEntityClass(), $resource->id);
         if (null !== $entity) {
@@ -86,5 +94,21 @@ trait AbstractDataProcessor
             preg_match('/DETAIL: (.*)/', $exception->getMessage(), $matches);
             throw new AccessDeniedHttpException($this->translator->trans('unable_to_delete_record', ['detail' => $matches[1]], domain: 'ApiResource'), $exception);
         }
+    }
+
+    protected function override(string $operation, string $class): bool
+    {
+        try {
+            $attributes = (new ReflectionClass($this->authorizationService))->getProperty('resources')->getValue($this->authorizationService)[$class];
+        } catch (Throwable) {
+            return false;
+        }
+
+        $allowed = array_merge($attributes[AuthorizationService::ALL] ?? [], $attributes[$operation] ?? []);
+        if ([] !== $allowed && array_key_exists(AuthenticatedVoter::PUBLIC_ACCESS, $allowed)) {
+            return true;
+        }
+
+        return false;
     }
 }
