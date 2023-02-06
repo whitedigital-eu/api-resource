@@ -6,20 +6,17 @@ use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Patch;
 use Exception;
-use ReflectionClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
-use Throwable;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
 
-use function array_key_exists;
-use function array_merge;
 use function preg_match;
 
 trait AbstractDataProcessor
 {
+    use Override;
+
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?object
     {
         if (!$operation instanceof DeleteOperationInterface) {
@@ -94,21 +91,5 @@ trait AbstractDataProcessor
             preg_match('/DETAIL: (.*)/', $exception->getMessage(), $matches);
             throw new AccessDeniedHttpException($this->translator->trans('unable_to_delete_record', ['detail' => $matches[1]], domain: 'ApiResource'), $exception);
         }
-    }
-
-    protected function override(string $operation, string $class): bool
-    {
-        try {
-            $attributes = (new ReflectionClass($this->authorizationService))->getProperty('resources')->getValue($this->authorizationService)[$class];
-        } catch (Throwable) {
-            return false;
-        }
-
-        $allowed = array_merge($attributes[AuthorizationService::ALL] ?? [], $attributes[$operation] ?? []);
-        if ([] !== $allowed && array_key_exists(AuthenticatedVoter::PUBLIC_ACCESS, $allowed)) {
-            return true;
-        }
-
-        return false;
     }
 }
