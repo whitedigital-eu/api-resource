@@ -22,6 +22,10 @@
                 <source>named_required_parameter_is_incorrect</source>
                 <target>Nekorekta "{parameter}" vērtība</target>
             </trans-unit>
+            <trans-unit id="6">
+                <source>record_already_exists</source>
+                <target>Nav iespējams izveidot/labot šo ierakstu, jo cits ieraksts ar šādām vērtībām jau eksistē ({detail})</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

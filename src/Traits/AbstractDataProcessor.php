@@ -5,8 +5,10 @@ namespace WhiteDigital\ApiResource\Traits;
 use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Patch;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
@@ -65,7 +67,14 @@ trait AbstractDataProcessor
     protected function flushAndRefresh(BaseEntity $entity): void
     {
         $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+
+        try {
+            $this->entityManager->flush();
+        } catch (UniqueConstraintViolationException $exception) {
+            preg_match('/DETAIL: (.*)/', $exception->getMessage(), $matches);
+            throw new PreconditionFailedHttpException($this->translator->trans('record_already_exists', ['detail' => $matches[1]], domain: 'ApiResource'), $exception);
+        }
+
         $this->entityManager->refresh($entity);
     }
 

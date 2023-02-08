@@ -22,6 +22,10 @@
                 <source>named_required_parameter_is_incorrect</source>
                 <target>Incorrect "{parameter}" value</target>
             </trans-unit>
+            <trans-unit id="6">
+                <source>record_already_exists</source>
+                <target>Unable to create/update this record as another record with these values exists ({detail})</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
