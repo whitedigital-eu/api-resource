@@ -43,6 +43,11 @@
             "WhiteDigital\\ApiResource\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "WhiteDigital\\ApiResource\\Tests\\Source\\": "tests/src"
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
