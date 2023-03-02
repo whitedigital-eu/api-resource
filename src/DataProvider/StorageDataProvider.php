@@ -9,7 +9,6 @@ use ReflectionException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use WhiteDigital\ApiResource\ApiResource\StorageItemResource;
-use WhiteDigital\ApiResource\Php82\AbstractDataProvider;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 
 final readonly class StorageDataProvider extends AbstractDataProvider

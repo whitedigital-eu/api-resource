@@ -1,23 +1,40 @@
 <?php declare(strict_types = 1);
 
-namespace WhiteDigital\ApiResource\Traits;
+namespace WhiteDigital\ApiResource\DataProcessor;
 
 use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\State\ProcessorInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use WhiteDigital\ApiResource\Traits\Override;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
+use WhiteDigital\EntityResourceMapper\Mapper\EntityToResourceMapper;
+use WhiteDigital\EntityResourceMapper\Mapper\ResourceToEntityMapper;
 use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
 
 use function preg_match;
 
-trait AbstractDataProcessor
+abstract readonly class AbstractDataProcessor implements ProcessorInterface
 {
     use Override;
+
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected ResourceToEntityMapper $resourceToEntityMapper,
+        protected EntityToResourceMapper $entityToResourceMapper,
+        protected AuthorizationService $authorizationService,
+        protected ParameterBagInterface $bag,
+        protected TranslatorInterface $translator,
+    ) {
+    }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?object
     {
