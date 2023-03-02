@@ -48,9 +48,13 @@ use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 class <?php echo $class_name; ?> extends BaseResource
 {
     use ARTraits\CreatedUpdated;
-    use ARTRaits\Groups;
 
     public const PREFIX = '<?php echo $prefix . $separator; ?>';
+
+    private const ITEM = self::PREFIX . 'item'; // <?php echo $prefix . $separator . 'item' . "\n"; ?>
+    private const PATCH = self::PREFIX . 'patch'; // <?php echo $prefix . $separator . 'patch' . "\n"; ?>
+    private const READ = self::PREFIX . 'read'; // <?php echo $prefix . $separator . 'read' . "\n"; ?>
+    private const WRITE = self::PREFIX . 'write'; // <?php echo $prefix . $separator . 'write' . "\n"; ?>
 
     #[ApiProperty(identifier: true)]
     #[Groups([self::READ, self::ITEM, ])]

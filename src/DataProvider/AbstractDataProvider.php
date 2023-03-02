@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace WhiteDigital\ApiResource\Traits;
+namespace WhiteDigital\ApiResource\DataProvider;
 
 use ApiPlatform\Doctrine\Orm\Extension\FilterExtension;
 use ApiPlatform\Doctrine\Orm\Extension\OrderExtension;
@@ -9,11 +9,23 @@ use ApiPlatform\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use WhiteDigital\ApiResource\Traits\Override;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
+use WhiteDigital\EntityResourceMapper\Mapper\ClassMapper;
+use WhiteDigital\EntityResourceMapper\Mapper\EntityToResourceMapper;
+use WhiteDigital\EntityResourceMapper\Mapper\ResourceToEntityMapper;
 use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
 
 use function count;
@@ -21,9 +33,26 @@ use function is_array;
 use function sprintf;
 use function strtolower;
 
-trait AbstractDataProvider
+abstract class AbstractDataProvider implements ProviderInterface
 {
     use Override;
+
+    /** @noinspection PhpInapplicableAttributeTargetDeclarationInspection */
+    public function __construct(
+        protected readonly EntityManagerInterface $entityManager,
+        protected readonly ManagerRegistry $doctrine,
+        protected readonly AuthorizationService $authorizationService,
+        protected readonly ResourceToEntityMapper $resourceToEntityMapper,
+        protected readonly EntityToResourceMapper $entityToResourceMapper,
+        protected readonly ClassMapper $classMapper,
+        protected readonly RequestStack $requestStack,
+        protected readonly TranslatorInterface $translator,
+        protected readonly Security $security,
+        protected readonly ParameterBagInterface $bag,
+        #[TaggedIterator('api_platform.doctrine.orm.query_extension.collection')]
+        protected readonly iterable $collectionExtensions = [],
+    ) {
+    }
 
     /**
      * @throws ReflectionException

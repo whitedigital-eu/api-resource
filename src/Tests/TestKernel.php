@@ -4,6 +4,7 @@ namespace WhiteDigital\ApiResource\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel;
+
 use function getcwd;
 
 class TestKernel extends Kernel
@@ -17,6 +18,6 @@ class TestKernel extends Kernel
 
     public function getCacheDir(): string
     {
-        return sys_get_temp_dir() . '/' .hash(algo: 'xxh128', data: getcwd()) . '/var/cache';
+        return sys_get_temp_dir() . '/' . hash(algo: 'xxh128', data: getcwd()) . '/var/cache';
     }
 }

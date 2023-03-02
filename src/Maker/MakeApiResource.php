@@ -99,16 +99,10 @@ If the argument is missing, the command will ask for the entity class name inter
             exit;
         }
 
-        $phpVersion = 'Php82';
-        if (80200 > $this->bag->get($wd . '.php_version')) {
-            $phpVersion = 'Php81';
-        }
-
         $generator->generateClass(
             $provider->getFullName(),
             dirname(__DIR__, 2) . '/skeleton/apiresource/DataProvider.tpl.php',
             [
-                'php' => $phpVersion,
                 'resource' => $resource,
             ],
         );
@@ -118,19 +112,13 @@ If the argument is missing, the command will ask for the entity class name inter
             dirname(__DIR__, 2) . '/skeleton/apiresource/DataProcessor.tpl.php',
             [
                 'entity' => $entity,
-                'php' => $phpVersion,
                 'resource' => $resource,
             ],
         );
 
-        $apiResourceTemplate = match ($phpVersion) {
-            'Php81' => '/skeleton/apiresource/ApiResource81.tpl.php',
-            default => '/skeleton/apiresource/ApiResource.tpl.php',
-        };
-
         $generator->generateClass(
             $resource->getFullName(),
-            dirname(__DIR__, 2) . $apiResourceTemplate,
+            dirname(__DIR__, 2) . '/skeleton/apiresource/ApiResource.tpl.php',
             [
                 'entity_name' => $entityName,
                 'prefix' => $this->toSnakeCase($entityName, $this->bag->get($wd . '.defaults.space')),

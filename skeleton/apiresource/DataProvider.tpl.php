@@ -6,10 +6,10 @@ use ApiPlatform\Exception\ResourceClassNotFoundException;
 use <?php echo $resource->getFullName() . ";\n"; ?>
 use ReflectionException;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use WhiteDigital\ApiResource\<?php echo $php; ?>\AbstractDataProvider;
+use WhiteDigital\ApiResource\DataProvider\AbstractDataProvider;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 
-final <?php if('Php82' === $php){ echo 'readonly'; } ?> class <?php echo $class_name; ?> extends AbstractDataProvider
+final class <?php echo $class_name; ?> extends AbstractDataProvider
 {
     /**
      * @throws ExceptionInterface

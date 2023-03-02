@@ -7,11 +7,11 @@ use <?php echo $resource->getFullName() . ";\n"; ?>
 use <?php echo $entity->getFullName() . ";\n"; ?>
 use ReflectionException;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use WhiteDigital\ApiResource\<?php echo $php; ?>\AbstractDataProcessor;
+use WhiteDigital\ApiResource\DataProcessor\AbstractDataProcessor;
 use WhiteDigital\EntityResourceMapper\Entity\BaseEntity;
 use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 
-final <?php if('Php82' === $php){echo 'readonly';} ?> class <?php echo $class_name; ?> extends AbstractDataProcessor
+final class <?php echo $class_name; ?> extends AbstractDataProcessor
 {
     public function getEntityClass(): string
     {
