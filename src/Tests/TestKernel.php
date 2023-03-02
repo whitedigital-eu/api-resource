@@ -4,7 +4,6 @@ namespace WhiteDigital\ApiResource\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel;
-use function dump;
 use function getcwd;
 
 class TestKernel extends Kernel

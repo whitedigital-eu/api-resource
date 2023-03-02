@@ -16,12 +16,12 @@ use WhiteDigital\EntityResourceMapper\Security\AuthorizationService;
 
 use function preg_match;
 
-final readonly class StorageDataProcessor implements ProcessorInterface
+final class StorageDataProcessor implements ProcessorInterface
 {
     public function __construct(
-        private AuthorizationService $authorizationService,
-        private EntityManagerInterface $entityManager,
-        protected TranslatorInterface $translator,
+        protected readonly AuthorizationService $authorizationService,
+        protected readonly EntityManagerInterface $entityManager,
+        protected readonly TranslatorInterface $translator,
     ) {
     }
 
