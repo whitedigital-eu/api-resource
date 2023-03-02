@@ -62,7 +62,10 @@ use WhiteDigital\EntityResourceMapper\Resource\BaseResource;
 class StorageItemResource extends BaseResource
 {
     use Traits\CreatedUpdated;
-    use Traits\Groups;
+
+    public const ITEM = self::PREFIX . 'item';
+    public const READ = self::PREFIX . 'read';
+    public const WRITE = self::PREFIX . 'write';
 
     public const PREFIX = 'storage:';
 

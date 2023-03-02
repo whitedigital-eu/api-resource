@@ -38,6 +38,9 @@
         "roave/security-advisories": "dev-latest",
         "whitedigital-eu/config-pack": "*"
     },
+    "conflict": {
+        "php": ">=8.2.0"
+    },
     "autoload": {
         "psr-4": {
             "WhiteDigital\\ApiResource\\": "src/"
@@ -55,7 +58,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.3.x-dev"
+            "dev-main": "0.2.x-dev"
         }
     }
 }
