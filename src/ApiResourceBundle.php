@@ -11,9 +11,6 @@ use WhiteDigital\ApiResource\DependencyInjections\Traits\DefineApiPlatformMappin
 use WhiteDigital\ApiResource\DependencyInjections\Traits\DefineOrmMappings;
 
 use function array_merge_recursive;
-use function explode;
-
-use const PHP_VERSION_ID;
 
 class ApiResourceBundle extends AbstractBundle
 {
@@ -53,17 +50,6 @@ class ApiResourceBundle extends AbstractBundle
             ->canBeDisabled()
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('php_version')
-                    ->defaultValue(PHP_VERSION_ID)
-                    ->beforeNormalization()
-                        ->ifString()
-                        ->then(static function ($v) {
-                            $version = explode('.', $v);
-
-                            return (int) $version[0] * 10000 + (int) $version[1] * 100 + (int) $version[2];
-                        })
-                    ->end()
-                ->end()
                 ->arrayNode('namespaces')
                     ->addDefaultsIfNotSet()
                     ->children()
