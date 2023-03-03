@@ -49,7 +49,7 @@ final readonly class StorageDataProcessor implements ProcessorInterface
             $this->entityManager->flush();
         } catch (Exception $exception) {
             preg_match('/DETAIL: (.*)/', $exception->getMessage(), $matches);
-            throw new AccessDeniedHttpException($this->translator->trans('unable_to_delete_record', ['detail' => $matches[1]], domain: 'ApiResource'), $exception);
+            throw new AccessDeniedHttpException($this->translator->trans('unable_to_delete_record', ['%detail%' => $matches[1]], domain: 'ApiResource'), $exception);
         }
     }
 }
