@@ -27,13 +27,13 @@ class CreateStorageObjectController extends AbstractController
     public function __invoke(Request $request, EntityManagerInterface $em, StorageInterface $vichStorage, TranslatorInterface $translator): StorageItemResource
     {
         if (!$request->files->has($key = 'file')) {
-            throw new BadRequestHttpException($translator->trans('named_required_parameter_is_missing', ['parameter' => 'file'], domain: 'ApiResource'));
+            throw new BadRequestHttpException($translator->trans('named_required_parameter_is_missing', ['%parameter%' => 'file'], domain: 'ApiResource'));
         }
 
         $uploadedFile = $request->files->get($key);
 
         if (!$uploadedFile instanceof UploadedFile) {
-            throw new BadRequestHttpException($translator->trans('named_required_parameter_is_incorrect', ['parameter' => 'file'], domain: 'ApiResource'));
+            throw new BadRequestHttpException($translator->trans('named_required_parameter_is_incorrect', ['%parameter%' => 'file'], domain: 'ApiResource'));
         }
 
         if ($uploadedFile->getError()) {
